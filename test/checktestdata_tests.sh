@@ -35,6 +35,7 @@ checkfail() {
 
 for prog in checktestdata/test_*_prog.in; do
     base="${prog%_prog.*}"
+    echo "${base}"
 
     # Successful cases
     for data in "${base}"_data.in*; do

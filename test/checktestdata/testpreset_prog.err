@@ -1,1 +1,0 @@
-ASSERT( pi==3 || n=="bar" )
