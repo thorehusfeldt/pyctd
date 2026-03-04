@@ -1,7 +1,7 @@
 import fractions
 import re
-from tokenizer import Token, TokenType
-from lib import Boolean, String, Number, VarType
+from checktestdata.tokenizer import Token, TokenType
+from checktestdata.lib import Boolean, String, Number, VarType
 
 class ParserException(Exception):
 	def __init__(self, msg, token):
@@ -446,7 +446,7 @@ class Parser:
 	def python_code(self, standalone = False):
 		self.parse()
 		generated = [
-			"from lib import *",
+			"from checktestdata.lib import *",
 			"from itertools import count",
 		]
 		if standalone:

@@ -1,0 +1,31 @@
+[project]
+name = "checktestdata"
+dynamic = ["version"]
+authors = [
+    { name="MZuenni" },
+]
+description = "A python reimplementation of Checktestdata (https://github.com/DOMjudge/checktestdata)."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.scripts]
+pyctd = "checktestdata.pyctd:main"
+
+[project.urls]
+Homepage = "https://github.com/mzuenni/pyctd"
+Issues = "https://github.com/mzuenni/pyctd/issues"
+
+[build-system]
+requires = ["hatchling", "versioningit"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "versioningit"

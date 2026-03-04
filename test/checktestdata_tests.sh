@@ -4,7 +4,7 @@ shopt -s nullglob
 cd "$(dirname "$0")"
 
 checksucc() {
-    if python3 ../src/ "$prog" < "$data" > /dev/null 2>&1; then
+    if python3 ../checktestdata/ "$prog" < "$data" > /dev/null 2>&1; then
         status=0
     else
         status=$?
@@ -19,7 +19,7 @@ checksucc() {
 }
 
 checkfail() {
-    if python3 ../src/ "$prog" < "$data" > /dev/null 2>&1; then
+    if python3 ../checktestdata/ "$prog" < "$data" > /dev/null 2>&1; then
         status=0
     else
         status=$?

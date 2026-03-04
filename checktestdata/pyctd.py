@@ -4,8 +4,8 @@ import sys
 import traceback
 from pathlib import Path
 
-from tokenizer import tokenize
-from parser import parse, Command, ParserException
+from checktestdata.tokenizer import tokenize
+from checktestdata.parser import parse, Command, ParserException
 
 GENERATED_DEBUG_NAME = "<generated from ctd>"
 
