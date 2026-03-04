@@ -68,7 +68,7 @@ jobs:
     - build
     environment:
       name: pypi
-      url: https://pypi.org/p/pyChecktestdata
+      url: https://pypi.org/p/checktestdata
     permissions:
       id-token: write
     steps:
