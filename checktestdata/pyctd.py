@@ -31,7 +31,7 @@ def parse_args():
 		const=True,
 		default=None,
 		type=Path,
-		help="Print debug messages",
+		help="Convert a .ctd file into a standalone python program",
 	)
 	parser.add_argument(
 		"--constraints_file",
