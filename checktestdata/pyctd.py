@@ -8,8 +8,6 @@ from checktestdata.lib import ValidationError
 from checktestdata.parser import parse, Command, ParserException
 from checktestdata.tokenizer import tokenize
 
-GENERATED_DEBUG_NAME = "<convertd from ctd>"
-
 def parse_args():
 	parser = argparse.ArgumentParser(description="Checktestdata tool written in Python.")
 	parser.add_argument(
@@ -73,7 +71,7 @@ def main():
 			python_code = parser.python_code()
 			python_globals = parser.python_globals()
 			debug(f"Compiling python code")
-			compiled = compile(python_code, GENERATED_DEBUG_NAME, "exec")
+			compiled = compile(python_code, str(raw_ctd), "exec")
 			try:
 				debug(f"Running compiled code")
 				exec(compiled, python_globals)
@@ -83,7 +81,7 @@ def main():
 			except Exception as e:
 				print(e, file=sys.stderr)
 				for frame in traceback.extract_tb(e.__traceback__):
-					if frame.filename == GENERATED_DEBUG_NAME:
+					if frame.filename == str(raw_ctd):
 						line = parser.guess_line(python_code, frame.lineno)
 						if line:
 							print(f"Source {line[0].line}:{line[0].column}", file=sys.stderr)
