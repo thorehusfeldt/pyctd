@@ -1,0 +1,3 @@
+SET(a[1]=1)
+SET(a=2)
+ASSERT(INARRAY(1,a))

@@ -1,0 +1,3 @@
+SET(a[1]=2)
+SET(b=a)
+INT(0, b[1]) NEWLINE
