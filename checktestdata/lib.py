@@ -172,6 +172,9 @@ class VarType:
 
 	def __init__(self, name):
 		self.name = name
+		# in checktestdata <var> = <val> is a shorthand for var[] = <val>
+		# in other words: its just another entry in the array
+		# (we keep them separated since this is more efficient)
 		self.data = None
 		self.entries = {}
 		self.value_count = Counter()
@@ -183,28 +186,19 @@ class VarType:
 
 	def __getitem__(self, key):
 		if key == None:
-			if self.entries:
-				raise TypeError(f"{self.name} is an array")
 			if self.data is None:
 				raise TypeError(f"{self.name} is not assigned")
 			return self.data
 		else:
-			if self.data is not None:
-				raise TypeError(f"{self.name} is not an array")
 			if key not in self.entries:
 				raise TypeError(f"missing key in {self.name}")
 			return self.entries[key]
 
 	def __setitem__(self, key, value):
-		# TODO: handle var_a[None] = var_b[None]?
 		assert isinstance(value, _ValueType), self.name
 		if key == None:
-			if self.entries:
-				raise TypeError(f"cannot replace array {self.name} with single value")
 			self.data = value
 		else:
-			if self.data is not None:
-				raise TypeError(f"{self.name} is not an array")
 			for key_part in key:
 				# Checktestdata seems to enforce integers here
 				if not isinstance(key_part, Number) or not key_part.is_integer():
@@ -213,12 +207,6 @@ class VarType:
 				self.value_count[self.entries[key]] -= 1
 			self.entries[key] = value
 			self.value_count[value] += 1
-
-def assert_array(method, arg):
-	if not isinstance(arg, VarType):
-		raise TypeError(f"{method} cannot be invoked with {arg.__class__.__name__}")
-	if arg.data is not None:
-		raise TypeError(f"{method} must be invoked with an array, but {arg.name} is a value")
 
 def assert_type(method, arg, t):
 	if not isinstance(arg, t):
@@ -385,20 +373,26 @@ def ISEOF():
 	return Boolean(not reader.peek_char())
 
 def UNIQUE(arg, *args):
-	assert_array("UNIQUE", arg)
+	assert isinstance(arg, VarType)
 	for other in args:
-		assert_array("UNIQUE", other)
+		assert isinstance(other, VarType)
+		if (arg.data is None) != (other.data is None):
+			raise ValidationError(f"{arg.name} and {other.name} must have the same keys for UNIQUE")
 		if arg.entries.keys() != other.entries.keys():
 			raise ValidationError(f"{arg.name} and {other.name} must have the same keys for UNIQUE")
 	def make_entry(key):
 		return (arg[key], *(other[key] for other in args))
+	expected = len(arg.entries)
 	unique = {make_entry(key) for key in arg.entries.keys()}
-	return Boolean(len(unique) == len(arg.entries))
+	if arg.data is not None:
+		expected += 1
+		unique.add((arg.data, *(other.data for other in args)))
+	return Boolean(len(unique) == expected)
 
 def INARRAY(value, array):
 	assert isinstance(value, _ValueType)
-	assert_array("INARRAY", array)
-	return Boolean(array.value_count[value] > 0)
+	assert isinstance(array, VarType)
+	return array.data == value or Boolean(array.value_count[value] > 0)
 
 def STRLEN(arg):
 	assert_type("STRLEN", arg, String)
