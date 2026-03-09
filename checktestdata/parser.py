@@ -210,7 +210,7 @@ class Parser:
         "MATCH": ["_value"],
         "ISEOF": None,
         "UNIQUE": _ellipsis("_varname"),
-        "INARRAY": ["_value", "_varname"],
+        "INARRAY": ["_expr", "_varname"],
         # functions
         "STRLEN": ["_value"],
         # commands
@@ -219,13 +219,7 @@ class Parser:
         "EOF": None,
         "INT": ["_expr", "_expr", ["_constraint_variable"]],
         "FLOAT": ["_expr", "_expr", ["_constraint_variable", [TokenType.OPTION]]],
-        "FLOATP": [
-            "_expr",
-            "_expr",
-            "_value",
-            "_value",
-            ["_constraint_variable", [TokenType.OPTION]],
-        ],
+        "FLOATP": ["_expr", "_expr", "_expr", "_expr", ["_constraint_variable", [TokenType.OPTION]]],
         "STRING": ["_value"],
         "REGEX": ["_value", ["_variable"]],
         "ASSERT": ["_test_expr"],

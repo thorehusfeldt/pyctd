@@ -213,6 +213,8 @@ class VarType:
 
     def __setitem__(self, key, value):
         assert isinstance(value, _ValueType), self.name
+        if isinstance(value, Boolean):
+        	raise TypeError(f"value for {self.name} must not be {value.value}")
         if key is None:
             self.data = value
         else:
@@ -502,9 +504,7 @@ def FLOAT(min, max, constraint=None, option=FLOAT_OPTION.ANY):
     return Number(value)
 
 
-def FLOATP(
-    min, max, mindecimals, maxdecimals, constraint=None, option=FLOAT_OPTION.ANY
-):
+def FLOATP(min, max, mindecimals, maxdecimals, constraint=None, option=FLOAT_OPTION.ANY):
     assert isinstance(option, FLOAT_OPTION)
     assert_type("FLOATP", min, Number)
     assert_type("FLOATP", max, Number)

@@ -93,6 +93,5 @@ def main():
                 sys.exit(2)
         debug("Done")
     except Exception as e:
-        traceback.print_exc()
         print(e, file=sys.stderr)
         sys.exit(2)
