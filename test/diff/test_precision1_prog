@@ -1,0 +1,6 @@
+ASSERT(0.1+0.1+0.1==0.3)
+SET(a=0.01,b=0)
+REP(100)
+	SET(b=b+a)
+END
+ASSERT(b==1)

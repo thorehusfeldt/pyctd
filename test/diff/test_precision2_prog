@@ -1,0 +1,9 @@
+INT(0, 1000, n) NEWLINE
+REP(n)
+	FLOAT(0, 10, a) SPACE INT(0, 1000, k) SPACE FLOAT(0, 10, r) NEWLINE
+	SET(b=0)
+	REP(k)
+		SET(b=b+a)
+	END
+	ASSERT(b==r)
+END
