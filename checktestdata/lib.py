@@ -448,7 +448,7 @@ def NEWLINE():
 def EOF():
     got = reader.peek_char()
     if got:
-        msg = f"{reader.line}:{reader.column} got: {msg_text(got)}, but expected {msg_text('')}"
+        msg = f"{reader.line}:{reader.column} got: {msg_text(got)}, but expected {msg_text(b'')}"
         raise ValidationError(msg)
 
 
