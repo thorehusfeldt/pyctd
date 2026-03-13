@@ -375,7 +375,7 @@ def init_lib():
         args, _ = parser.parse_known_args()
 
     constraints = Constraints(args.constraints_file)
-    raw = sys.stdin.read()
+    raw = sys.stdin.buffer.read().decode("latin1")
     reader = _Reader(raw)
 
 
