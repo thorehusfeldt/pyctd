@@ -378,13 +378,20 @@ def init_lib():
         required=False,
         help="The file to write constraints to file to use.",
     )
-    if standalone:
-        args = parser.parse_args()
-    else:
-        args, _ = parser.parse_known_args()
+    parser.add_argument(
+        "testdata",
+        nargs="?",
+        default="-",
+        help="If given, the input file to check, or `-` for stdin",
+    )
+    args = parser.parse_args()
 
     constraints = Constraints(args.constraints_file)
-    raw = sys.stdin.buffer.read()
+
+    if args.testdata == "-":
+        raw = sys.stdin.buffer.read()
+    else:
+        raw = Path(args.testdata).read_bytes()
     reader = _Reader(raw)
 
 

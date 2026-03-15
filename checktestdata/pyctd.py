@@ -13,9 +13,6 @@ def parse_args():
         description="Checktestdata tool written in Python."
     )
     parser.add_argument(
-        "ctd_file", metavar="ctd_file", type=Path, help="The .ctd checker source file"
-    )
-    parser.add_argument(
         "--debug",
         "-d",
         action="store_true",
@@ -33,15 +30,34 @@ def parse_args():
     parser.add_argument(
         "--constraints_file",
         default=None,
-        type=Path,
         required=False,
         help="The file to write constraints to file to use.",
     )
+    parser.add_argument(
+        "program", type=Path, help="The .ctd checker source file"
+    )
+    parser.add_argument(
+        "testdata", nargs="?", help="If given, the input file to check, or `-` for stdin"
+    )
 
     args = parser.parse_args()
+    if args.convert is not None:
+        if args.constraints_file is not None:
+            parser.error("invalid arguments, cannot combine `--convert` and `--constraints_file`")
+        if args.testdata is not None:
+            parser.error("invalid arguments, cannot combine `--convert` and `testdata`")
     if args.convert is True:
-        args.convert = args.ctd_file.with_suffix(".py")
+        args.convert = args.program.with_suffix(".py")
 
+    return args
+
+
+def standalone_args(config):
+    args = [sys.argv[0]]
+    if config.constraints_file is not None:
+        sys.argv += ["--constraints_file", config.constraints_file]
+    if config.testdata is not None:
+        sys.argv += [config.testdata]
     return args
 
 
@@ -55,8 +71,8 @@ def main():
         print(*args, **kwargs)
 
     try:
-        debug(f"Reading: {config.ctd_file}")
-        raw_ctd = config.ctd_file.read_bytes()
+        debug(f"Reading: {config.program}")
+        raw_ctd = config.program.read_bytes()
         debug("Generating tokens")
         tokens = tokenize(raw_ctd)
         debug("Parsing tokens")
@@ -75,6 +91,7 @@ def main():
             compiled = compile(python_code, str(raw_ctd), "exec")
             try:
                 debug("Running compiled code")
+                sys.argv = standalone_args(config)
                 exec(compiled, python_globals)
             except ValidationError as e:
                 print(e, file=sys.stderr)
