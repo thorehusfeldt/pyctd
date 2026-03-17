@@ -1,10 +1,7 @@
 import fractions
 import re
-from collections import defaultdict
-from enum import auto, Enum
 from itertools import count
 from pathlib import Path
-from types import FunctionType
 
 import checktestdata.lib
 from checktestdata.lib import Boolean, Number, String, Value, VarType
@@ -111,13 +108,13 @@ class Assignment:
     def __init__(self, lhs, rhs):
         self.lhs = lhs if isinstance(lhs, list) else [lhs]
         self.rhs = rhs if isinstance(lhs, list) else [rhs]
-        assert(len(self.lhs) == len(self.rhs))
+        assert len(self.lhs) == len(self.rhs)
 
     def __str__(self):
         return "; ".join(f"{lhs} = {rhs}" for lhs, rhs in zip(self.lhs, self.rhs))
-        #lhs = ", ".join(map(str, self.lhs))
-        #rhs = ", ".join(map(str, self.rhs))
-        #return f"{lhs} = {rhs}"
+        # lhs = ", ".join(map(str, self.lhs))
+        # rhs = ", ".join(map(str, self.rhs))
+        # return f"{lhs} = {rhs}"
 
 
 class Expression:

@@ -9,9 +9,7 @@ from checktestdata.tokenizer import tokenize
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Checktestdata tool written in Python."
-    )
+    parser = argparse.ArgumentParser(description="Checktestdata tool written in Python.")
     parser.add_argument(
         "-d",
         "--debug",
