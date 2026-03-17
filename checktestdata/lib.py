@@ -32,7 +32,7 @@ def decode_unsafe(raw):
             # out.append("\ufffd")
     return "".join(out)
 
-ELLIPSIS = "[...]"
+ELLIPSIS = "[\u2026]"
 
 def crop(text, limit=25):
     if len(text) > limit + len(ELLIPSIS):
@@ -344,9 +344,12 @@ class _Reader:
     def pop_string(self, expected):
         if not self.raw.startswith(expected, self.pos):
             got = self.raw[self.pos : self.pos + len(expected)]
+            mismatch = next((i for i, c in enumerate(zip(got, expected)) if c[0] != c[1]), min(len(got), len(expected)))
             msg = f"got: {format_token(got)}, but expected {format_token(expected)}"
             if expected == b"\n" and got == b"\r":
                 msg += ' (use explicit STRING("\\r\\n") for windows newlines)'
+            elif mismatch > 5:
+                msg += f" (mismatch after {mismatch} chars)"
             token = InputToken(self.raw, self.line, self.column, len(got))
             raise ValidationError(msg, token)
         self._advance(expected)
@@ -355,7 +358,7 @@ class _Reader:
         match = regex.match(self.raw, self.pos)
         if not match:
             got = self.peek_until_space()
-            msg = f"got: {format_token(got)}, but expected '{format_token(expected)}'"
+            msg = f"got: {format_token(got)}, but expected '{format_token(regex.pattern)}'"
             token = InputToken(self.raw, self.line, self.column, len(got))
             raise ValidationError(msg, token)
         text = match.group()
